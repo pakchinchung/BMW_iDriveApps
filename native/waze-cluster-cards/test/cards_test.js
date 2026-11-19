@@ -155,7 +155,8 @@ async function service() {
     const sock = path.join(dir, 'ctl.sock');
     const settingsFile = path.join(dir, 'state', 'settings.json');
     let f = FULL, grabs = 0, done = false;
-    const C = { socket: sock, settingsFile, logFile: null, frameFile: path.join(dir, 'frame.rgb'), mapPollMs: 5, mapStaleMs: 400, idleAfterMs: 1e9 };
+    const C = { socket: sock, settingsFile, logFile: null, frameFile: path.join(dir, 'frame.rgb'), mapPollMs: 5, mapStaleMs: 400, idleAfterMs: 1e9,
+        statusFile: null };
     const lines = [];
     let stop = null;
     const run = svc.run({
@@ -268,13 +269,44 @@ async function savedAtStart(dir) {
     const sock = path.join(dir, 'ctl2.sock');
     let grabs = 0;
     const p = svc.run({
-        conf: { socket: sock, settingsFile, logFile: null, mapPollMs: 5 }, ClusterRender: FakeClusterRender, loops: 30, log: () => {},
+        conf: { socket: sock, settingsFile, logFile: null, mapPollMs: 5, statusFile: null }, ClusterRender: FakeClusterRender, loops: 30, log: () => {},
         sleep: tick, grab: () => { grabs++; return Promise.resolve(FULL); },
     });
     instance.statusText = MAP_SHOWN;
     await p;
     ok(grabs === 0 && instance.layers.size === 0, 'off at start: nothing grabbed or drawn');
     console.log('ok   the saved setting: read at start (off: nothing), on without a file or with a broken one');
+}
+
+/* cluster-render's own status file, while fresh, in place of asking it over the socket. */
+async function statusFile(dir) {
+    const file = path.join(dir, 'status.txt');
+    fs.writeFileSync(file, MAP_SHOWN);
+    let stop = null;
+    const p = svc.run({
+        conf: { socket: path.join(dir, 'ctl3.sock'), settingsFile: path.join(dir, 'state3', 'settings.json'), logFile: null, mapPollMs: 5,
+            mapStaleMs: 300, statusFile: file },
+        ClusterRender: FakeClusterRender, loops: 1e9, log: () => {}, started: (s) => { stop = s; },
+        sleep: tick, grab: () => Promise.resolve(FULL),
+    });
+    const cr = instance;
+    cr.answer = false;                                     // the socket says nothing: only the file
+    await until('shown from the file', () => cr.visible().length === 2);
+    ok(cr.statusAsks === 0, `a fresh file: the renderer not asked (${cr.statusAsks})`);
+    fs.writeFileSync(file, MAP_WAITING);
+    await until('hidden from the file', () => cr.visible().length === 0);
+    fs.writeFileSync(file, MAP_SHOWN);
+    await until('shown again', () => cr.visible().length === 2);
+    const old = new Date(Date.now() - 5000);
+    fs.utimesSync(file, old, old);                         // cluster-render stopped writing it
+    await until('a stale file: asked over the socket', () => cr.statusAsks > 0);
+    await until('silent too: hidden', () => cr.visible().length === 0);
+    cr.statusText = MAP_SHOWN;
+    cr.answer = true;
+    await until('the socket\'s answer', () => cr.visible().length === 2);
+    stop();
+    await p;
+    console.log('ok   cluster-render\'s status file read while fresh, the renderer not asked; a stale one: asked over the socket');
 }
 
 function layout() {
@@ -295,6 +327,7 @@ function layout() {
     layout();
     const r = await service();
     await savedAtStart(r.dir);
+    await statusFile(r.dir);
     console.log(`${passed} checks passed`);
     process.exit(0);
 })().catch((e) => { console.error(e); process.exit(1); });

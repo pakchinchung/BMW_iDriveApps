@@ -11,8 +11,10 @@ car, without its own map for the cluster's map area.
 
 ## How it works
 
-- `cards.js` (root, `waze-cluster-cards.service`) asks cluster-render every
-  second whether waze-on-cluster's map video on the `map` target is shown.
+- `cards.js` (root, `waze-cluster-cards.service`) reads every second
+  whether waze-on-cluster's map video on the `map` target is shown, from
+  the status cluster-render writes to `/run/cluster-render/status.txt`
+  (asked over its socket while that file is missing or stale).
 - While it is, it grabs the central screen with `winston-grabber` (4 frames
   a second, 1 while no card has been seen for 20 s) and finds Waze's cards:
   Waze's full-screen map, or CarPlay's Dashboard.

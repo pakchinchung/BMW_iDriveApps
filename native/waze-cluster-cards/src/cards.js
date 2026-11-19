@@ -54,6 +54,7 @@ const DEFAULTS = {
     mapPollMs: 1000,                // how often cluster-render is asked whether the map shows
     mapStaleMs: 3500,               // no answer for this long: the map counts as not shown
     mapProducer: 'waze-on-cluster', // the app name of the map's layer in cluster-render's status
+    statusFile: '/run/cluster-render/status.txt',   // that status, written by cluster-render each second
     clientPath: '/var/opt/cluster-render/current/cluster_render_client.js',
     frameFile: '/dev/shm/waze-cluster-cards/frame.rgb',
     socket: '/dev/shm/waze-cluster-cards/ctl.sock',
@@ -245,19 +246,32 @@ function cardLayer(cr, name, C, log) {
 /* ---------------- is the Waze map on the cluster ---------------- */
 
 /**
- * Asks cluster-render for its status every mapPollMs and reads from it
- * whether the map producer's video layer on `map` is shown. shown() is false
- * while the renderer is not connected or has not answered for mapStaleMs.
+ * Whether the map producer's video layer on `map` is shown, from
+ * cluster-render's status text, every mapPollMs: the copy the renderer
+ * writes each second (statusFile), which costs it nothing more, while that
+ * is fresh; else asked over the socket. shown() is false while the renderer
+ * is not connected or its status is older than mapStaleMs.
  */
 function mapWatch(cr, C, log) {
     const re = new RegExp(`^layer \\d+ video of ${C.mapProducer.replace(/[^\w-]/g, '')} on map, [^\\n]*: shown$`, 'm');
     let shown = false, at = 0, said = null;
-    cr.on('status', (text) => {
+    const take = (text) => {
         shown = re.test(String(text || ''));
         at = Date.now();
         if (shown !== said) { log(`cluster map ${shown ? 'shown' : 'not shown'}`); said = shown; }
-    });
-    const ask = () => { if (cr.ready) cr.status(); };
+    };
+    cr.on('status', take);
+    const fromFile = () => {
+        if (!C.statusFile) return false;
+        try {
+            if (Date.now() - fs.statSync(C.statusFile).mtime.getTime() > C.mapStaleMs) return false;
+            take(fs.readFileSync(C.statusFile, 'utf8'));
+            return true;
+        } catch (e) {
+            return false;
+        }
+    };
+    const ask = () => { if (cr.ready && !fromFile()) cr.status(); };
     return {
         ask,
         shown() { return !!cr.ready && shown && Date.now() - at <= C.mapStaleMs; },
