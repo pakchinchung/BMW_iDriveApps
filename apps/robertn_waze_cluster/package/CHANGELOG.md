@@ -2,6 +2,8 @@
 
 ## Unreleased
 
+## 0.6.13
+
 Show Waze's turn and arrival cards, a checkbox in General: while Waze
 guides on the central screen, its turn card shows at the top of the Waze
 map on the cluster and its arrival card at the bottom, from Waze's
