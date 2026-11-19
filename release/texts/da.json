@@ -7,6 +7,10 @@
     "title": "Kort i instrumentpanelet",
     "description": "Kører kortet i instrumentpanelet i baggrunden. Det installeres sammen med appen Kort i instrumentpanelet, som du styrer det fra."
   },
+  "waze-cluster-cards": {
+    "title": "Waze-kort i instrumentpanelet",
+    "description": "Viser Waze’s svinganvisning og ankomstkort over Waze-kortet i instrumentpanelet. Det installeres sammen med appen Kort i instrumentpanelet, hvor du slår det til og fra."
+  },
   "robertn_waze_cluster": {
     "title": "Kort i instrumentpanelet",
     "description": "Viser CarPlay- eller Android Auto-kortet i instrumentpanelet og, hvis du vælger det, på HUD. På understøttede biler slår det sig selv til, når du har installeret det og genstartet hovedenheden."

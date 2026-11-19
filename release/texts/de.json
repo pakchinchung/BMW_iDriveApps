@@ -7,6 +7,10 @@
     "title": "Karten im Kombiinstrument",
     "description": "Betreibt die Karte im Kombiinstrument im Hintergrund. Wird mit der App Karten im Kombiinstrument installiert, über die Sie es steuern."
   },
+  "waze-cluster-cards": {
+    "title": "Waze-Karten im Kombiinstrument",
+    "description": "Zeigt die Abbiege- und die Ankunftskarte von Waze über der Waze-Karte im Kombiinstrument. Wird mit der App Karten im Kombiinstrument installiert, in der Sie es ein- und ausschalten."
+  },
   "robertn_waze_cluster": {
     "title": "Karten im Kombiinstrument",
     "description": "Zeigt die CarPlay- oder Android-Auto-Karte im Kombiinstrument und auf Wunsch im HUD. Bei unterstützten Fahrzeugen schaltet sie sich nach der Installation und einem Neustart der Headunit von selbst ein."

@@ -7,6 +7,10 @@
     "title": "Térkép a műszerfalon",
     "description": "A háttérben futtatja a műszerfal térképét. A Térkép a műszerfalon alkalmazással együtt települ, abból vezérelhető."
   },
+  "waze-cluster-cards": {
+    "title": "Waze-kártyák a műszerfalon",
+    "description": "A Waze kanyarodási és érkezési kártyáját mutatja a Waze térképe fölött a műszerfalon. A Térkép a műszerfalon alkalmazással együtt települ, abban kapcsolható be és ki."
+  },
   "robertn_waze_cluster": {
     "title": "Térkép a műszerfalon",
     "description": "Megjeleníti a CarPlay vagy Android Auto térképet a műszerfalon, és ha kéri, a HUD-on is. Támogatott autókon a telepítés és a fejegység újraindítása után magától bekapcsol."

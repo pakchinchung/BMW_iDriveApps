@@ -174,7 +174,7 @@ test('the build tree holds a submodule at its recorded commit; one its checkout 
     assert.throws(() => exportHead(main), /git archive 1{40} in third_party\/lib failed/);
 });
 
-test('the Waze chain: app -> waze-on-cluster -> cluster-render and a hook-running deploy tool', () => {
+test('the Waze chain: app -> waze-on-cluster and waze-cluster-cards -> cluster-render and a hook-running deploy tool', () => {
     const all = components();
     const byId = (id) => all.find((c) => c.id === id);
     const app = byId('robertn_waze_cluster');
@@ -182,7 +182,18 @@ test('the Waze chain: app -> waze-on-cluster -> cluster-render and a hook-runnin
     const renderer = byId('cluster-render');
     assert.ok(app && tool && renderer, 'all three are releasable');
     assert.deepStrictEqual(app.mguHmi, ['ID7']);
-    assert.deepStrictEqual(Object.keys(app.requires), ['waze-on-cluster']);
+    assert.deepStrictEqual(Object.keys(app.requires), ['waze-on-cluster', 'waze-cluster-cards']);
+    const cards = byId('waze-cluster-cards');
+    assert.ok(cards, 'the Waze cards tool is releasable');
+    const wantCards = app.requires['waze-cluster-cards'];
+    assert.ok(wantCards === 'next' || catalog.compareVersions(cards.version, wantCards) >= 0, 'the cards tool meets the app\'s requirement');
+    assert.deepStrictEqual(Object.keys(cards.requires), ['mgu-deploy', 'cluster-render'], 'the cards tool draws through the renderer');
+    assert.ok(catalog.compareVersions(renderer.version, cards.requires['cluster-render']) >= 0, 'the renderer meets the cards tool\'s minimum');
+    assert.deepStrictEqual(cards.mguHmi, ['ID7']);
+    assert.strictEqual(cards.uninstallable, true);
+    const cc = JSON.parse(fs.readFileSync(path.join(__dirname, '..', '..', 'native', 'waze-cluster-cards', 'component.json'), 'utf8'));
+    assert.deepStrictEqual(cc.files.map((f) => f.path).sort(), ['LICENSE', 'card.js', 'cards.js'], 'the service, its detection and its licence');
+    assert.ok(!cc.activate && !cc.deactivate && !cc.build, 'no hooks, nothing built: plain files and a unit');
     assert.ok(catalog.compareVersions(tool.version, app.requires['waze-on-cluster']) >= 0,
         'the tool meets the app\'s requirement');
     assert.deepStrictEqual(Object.keys(tool.requires), ['mgu-deploy', 'cluster-render'], 'the deploy tool installs first');

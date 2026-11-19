@@ -7,6 +7,10 @@
     "title": "Kaarten in instrumentpaneel",
     "description": "Laat de kaart in het instrumentpaneel op de achtergrond draaien. Wordt geïnstalleerd met de app Kaarten in instrumentpaneel, waarmee je het bedient."
   },
+  "waze-cluster-cards": {
+    "title": "Waze-kaarten in instrumentpaneel",
+    "description": "Toont de afslag- en aankomstkaart van Waze boven de Waze-kaart in het instrumentpaneel. Wordt geïnstalleerd met de app Kaarten in instrumentpaneel, waarin je het aan- en uitzet."
+  },
   "robertn_waze_cluster": {
     "title": "Kaarten in instrumentpaneel",
     "description": "Toont de CarPlay- of Android Auto-kaart in het instrumentpaneel en, als je dat kiest, op de HUD. Op ondersteunde auto's gaat hij vanzelf aan na de installatie en een herstart van de headunit."

@@ -7,6 +7,10 @@
     "title": "Kartat mittaristossa",
     "description": "Ajaa mittariston karttaa taustalla. Asentuu Kartat mittaristossa -sovelluksen mukana, ja sitä ohjataan sovelluksesta."
   },
+  "waze-cluster-cards": {
+    "title": "Waze-kortit mittaristossa",
+    "description": "Näyttää Wazen kääntymis- ja saapumiskortin Wazen kartan päällä mittaristossa. Asentuu Kartat mittaristossa -sovelluksen mukana, ja se kytketään päälle ja pois sovelluksesta."
+  },
   "robertn_waze_cluster": {
     "title": "Kartat mittaristossa",
     "description": "Näyttää CarPlayn tai Android Auton kartan mittaristossa ja halutessasi HUD-näytössä. Tuetuissa autoissa se kytkeytyy päälle itsestään asennuksen ja pääyksikön uudelleenkäynnistyksen jälkeen."

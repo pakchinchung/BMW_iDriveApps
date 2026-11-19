@@ -7,6 +7,10 @@
     "title": "Mapas en el cuadro",
     "description": "Ejecuta en segundo plano el mapa en el cuadro. Se instala con la app Mapas en el cuadro, desde la que lo controlas."
   },
+  "waze-cluster-cards": {
+    "title": "Tarjetas de Waze en el cuadro",
+    "description": "Muestra la tarjeta de giro y la de llegada de Waze sobre el mapa de Waze en el cuadro. Se instala con la app Mapas en el cuadro, desde la que lo activas y desactivas."
+  },
   "robertn_waze_cluster": {
     "title": "Mapas en el cuadro",
     "description": "Muestra el mapa de CarPlay o Android Auto en el cuadro de instrumentos y, si lo eliges, en el HUD. En los coches compatibles se activa solo tras instalarlo y reiniciar la unidad principal."

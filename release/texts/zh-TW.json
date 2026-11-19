@@ -7,6 +7,10 @@
     "title": "地圖儀表板顯示",
     "description": "在背景執行儀表板地圖。隨「地圖儀表板顯示」App 一起安裝，並在 App 中控制。"
   },
+  "waze-cluster-cards": {
+    "title": "Waze 卡片儀表板顯示",
+    "description": "在儀表板的 Waze 地圖上顯示 Waze 的轉向卡片和抵達卡片。隨「地圖儀表板顯示」App 一起安裝，並在 App 中開啟或關閉。"
+  },
   "robertn_waze_cluster": {
     "title": "地圖儀表板顯示",
     "description": "在儀表板上顯示 CarPlay 或 Android Auto 地圖，也可選擇顯示在 HUD 上。在支援的車輛上，安裝並重新啟動主機後自動開啟。"

@@ -7,6 +7,10 @@
     "title": "Mapas en el tablero",
     "description": "Ejecuta en segundo plano el mapa en el tablero. Se instala con la aplicación Mapas en el tablero, desde la que lo controlas."
   },
+  "waze-cluster-cards": {
+    "title": "Tarjetas de Waze en el tablero",
+    "description": "Muestra la tarjeta de giro y la de llegada de Waze sobre el mapa de Waze en el tablero. Se instala con la aplicación Mapas en el tablero, desde la que lo activas y desactivas."
+  },
   "robertn_waze_cluster": {
     "title": "Mapas en el tablero",
     "description": "Muestra el mapa de CarPlay o Android Auto en el tablero de instrumentos y, si lo eliges, en el HUD. En los autos compatibles se activa solo después de instalarlo y reiniciar la unidad principal."

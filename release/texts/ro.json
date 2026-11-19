@@ -7,6 +7,10 @@
     "title": "Hărți pe bord",
     "description": "Rulează în fundal harta de pe bord. Se instalează odată cu aplicația Hărți pe bord, din care îl controlați."
   },
+  "waze-cluster-cards": {
+    "title": "Carduri Waze pe bord",
+    "description": "Afișează cardul de viraj și cardul de sosire din Waze peste harta Waze de pe bord. Se instalează odată cu aplicația Hărți pe bord, din care îl porniți și îl opriți."
+  },
   "robertn_waze_cluster": {
     "title": "Hărți pe bord",
     "description": "Afișează harta CarPlay sau Android Auto pe bord și, dacă alegeți, pe HUD. Pe mașinile compatibile pornește singură după instalare și repornirea unității."

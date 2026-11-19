@@ -7,6 +7,10 @@
     "title": "地图仪表盘显示",
     "description": "在后台运行仪表盘地图。随“地图仪表盘显示”应用一起安装，在应用中进行控制。"
   },
+  "waze-cluster-cards": {
+    "title": "Waze 卡片仪表盘显示",
+    "description": "在仪表盘的 Waze 地图上显示 Waze 的转向卡片和到达卡片。随“地图仪表盘显示”应用一起安装，在应用中开启或关闭。"
+  },
   "robertn_waze_cluster": {
     "title": "地图仪表盘显示",
     "description": "在仪表盘上显示 CarPlay 或 Android Auto 地图，也可选择显示在 HUD 上。在支持的车辆上，安装并重启主机后自动开启。"

@@ -7,6 +7,10 @@
     "title": "Mappe sul quadro",
     "description": "Esegue in background la mappa sul quadro. Si installa con l'app Mappe sul quadro, da cui lo controlli."
   },
+  "waze-cluster-cards": {
+    "title": "Schede Waze sul quadro",
+    "description": "Mostra la scheda di svolta e quella di arrivo di Waze sopra la mappa di Waze sul quadro. Si installa con l’app Mappe sul quadro, da cui lo attivi e disattivi."
+  },
   "robertn_waze_cluster": {
     "title": "Mappe sul quadro",
     "description": "Mostra la mappa di CarPlay o Android Auto sul quadro strumenti e, se vuoi, sull'HUD. Sulle auto supportate si attiva da sola dopo l'installazione e il riavvio del sistema."

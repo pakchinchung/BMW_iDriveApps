@@ -7,6 +7,10 @@
     "title": "Zemljevidi na armaturi",
     "description": "V ozadju poganja zemljevid na armaturi. Namesti se skupaj z aplikacijo Zemljevidi na armaturi, v kateri ga upravljate."
   },
+  "waze-cluster-cards": {
+    "title": "Kartice Waze na armaturi",
+    "description": "Prikaže kartico zavoja in kartico prihoda iz Waze nad zemljevidom Waze na armaturi. Namesti se skupaj z aplikacijo Zemljevidi na armaturi, v kateri ga vklopite in izklopite."
+  },
   "robertn_waze_cluster": {
     "title": "Zemljevidi na armaturi",
     "description": "Prikaže zemljevid CarPlay ali Android Auto na armaturi in po želji na HUD. Na podprtih avtomobilih se vklopi sam po namestitvi in ponovnem zagonu enote."

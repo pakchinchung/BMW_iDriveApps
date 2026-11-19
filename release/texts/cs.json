@@ -7,6 +7,10 @@
     "title": "Mapy na přístrojovém štítu",
     "description": "Na pozadí spouští mapu na přístrojovém štítu. Instaluje se s aplikací Mapy na přístrojovém štítu, ve které ho ovládáte."
   },
+  "waze-cluster-cards": {
+    "title": "Karty Waze na přístrojovém štítu",
+    "description": "Zobrazuje kartu odbočení a kartu příjezdu z Waze přes mapu Waze na přístrojovém štítu. Instaluje se s aplikací Mapy na přístrojovém štítu, ve které ho zapínáte a vypínáte."
+  },
   "robertn_waze_cluster": {
     "title": "Mapy na přístrojovém štítu",
     "description": "Zobrazí mapu CarPlay nebo Android Auto na přístrojovém štítu a podle volby i na HUD. U podporovaných vozů se zapne sám po instalaci a restartu hlavní jednotky."

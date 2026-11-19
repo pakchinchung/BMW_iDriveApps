@@ -7,6 +7,10 @@
     "title": "Mapas no painel",
     "description": "Executa em segundo plano o mapa no painel. É instalado com o app Mapas no painel, de onde você o controla."
   },
+  "waze-cluster-cards": {
+    "title": "Cartões do Waze no painel",
+    "description": "Mostra o cartão de conversão e o de chegada do Waze sobre o mapa do Waze no painel. É instalado com o app Mapas no painel, onde você o liga e desliga."
+  },
   "robertn_waze_cluster": {
     "title": "Mapas no painel",
     "description": "Mostra o mapa do CarPlay ou do Android Auto no painel de instrumentos e, se você quiser, no HUD. Em carros compatíveis, liga sozinho depois de instalar e reiniciar a unidade principal."

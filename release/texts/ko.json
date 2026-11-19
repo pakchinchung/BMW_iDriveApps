@@ -7,6 +7,10 @@
     "title": "지도 계기판 표시",
     "description": "계기판 지도를 백그라운드에서 실행합니다. 지도 계기판 표시 앱과 함께 설치되며, 앱에서 제어합니다."
   },
+  "waze-cluster-cards": {
+    "title": "Waze 카드 계기판 표시",
+    "description": "계기판의 Waze 지도 위에 Waze의 방향 안내 카드와 도착 카드를 표시합니다. 지도 계기판 표시 앱과 함께 설치되며, 앱에서 켜고 끕니다."
+  },
   "robertn_waze_cluster": {
     "title": "지도 계기판 표시",
     "description": "CarPlay 또는 Android Auto 지도를 계기판에 표시하고, 선택하면 HUD에도 표시합니다. 지원되는 차량에서는 설치 후 헤드 유닛을 재시작하면 자동으로 켜집니다."
