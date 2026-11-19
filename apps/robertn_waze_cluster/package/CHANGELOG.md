@@ -2,6 +2,13 @@
 
 ## Unreleased
 
+Show Waze's turn and arrival cards, a checkbox in General: while Waze
+guides on the central screen, its turn card shows at the top of the Waze
+map on the cluster and its arrival card at the bottom, from Waze's
+full-screen map or CarPlay's Dashboard. Ticked by default; the row under it
+says what the cards are doing. It comes with the new Waze cards on cluster
+tool, after Waze Cards by h4m4d.
+
 ## 0.6.12
 
 The cluster's safe area is back to 504x368 at (286, 72); a smaller area made

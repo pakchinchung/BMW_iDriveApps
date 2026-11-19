@@ -1,0 +1,20 @@
+# SPDX-License-Identifier: MIT
+[Unit]
+Description=waze-cluster-cards: Waze's turn and arrival cards over the Maps on cluster map
+RequiresMountsFor=/var/opt
+Wants=cluster-render.socket
+After=local-fs.target cluster-render.socket
+
+[Service]
+# root: winston-grabber reads the screen through the compositor's own socket.
+# The Maps on cluster app switches it over /dev/shm/waze-cluster-cards/ctl.sock.
+ExecStart=/usr/bin/node /var/opt/waze-cluster-cards/current/cards.js
+Restart=on-failure
+RestartSec=10
+StandardOutput=journal
+# never in the way of the HMI: lower priority, at most half of one core
+Nice=10
+CPUQuota=50%
+
+[Install]
+WantedBy=multi-user.target

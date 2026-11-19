@@ -44,12 +44,14 @@ and temperatures, is a separate app.)*
 |---|---|
 | [`native/cluster-render`](native/cluster-render) | the cluster renderer: one service that draws every app's layers on the instrument cluster and the HUD, on iDrive 7 and iDrive 8 |
 | [`native/waze-on-cluster`](native/waze-on-cluster) | the CarPlay map (Waze, Apple Maps or Google Maps), or Android Auto's, on the instrument cluster, drawn through cluster-render |
+| [`native/waze-cluster-cards`](native/waze-cluster-cards) | Waze's turn and arrival cards from the central screen over the Waze map on the cluster (after Waze Cards by h4m4d, MIT) |
 | [`apps/robertn_waze_cluster`](apps/robertn_waze_cluster) | the iDrive app for it: where the map shows, the patches' status and buttons, Logs |
 | [`release`](release) | builds and publishes the Store catalog |
 | `tools` | `oap_pack.js`, `oap_link.js`: pack the app |
 
 Installing the app installs what it requires first: `mgu-deploy` from
-mgu-store, then `cluster-render` and `waze-on-cluster` from here. The
+mgu-store, then `cluster-render`, `waze-on-cluster` and `waze-cluster-cards`
+from here. The
 `waze-on-cluster` install hook writes the CarPlay patch, and the Android Auto
 patch on a car that supports it; one head-unit start activates them. The
 Store removes them in the reverse order: the app, then the tool, then the
@@ -63,6 +65,7 @@ make -C native/waze-on-cluster test test-x86 target
 node apps/robertn_waze_cluster/tools/test_control.js
 node apps/robertn_waze_cluster/tools/test_page.js
 node apps/robertn_waze_cluster/tools/test_i18n.js
+node native/waze-cluster-cards/test/cards_test.js
 node release/test/release_test.js
 node release/release.js check                         # reproducible artifacts
 ```
@@ -79,4 +82,5 @@ otherwise. What apps compile in or copy from cluster-render, its `include/`,
 MPL-2.0 ([`LICENSES/MPL-2.0.txt`](LICENSES/MPL-2.0.txt)). Third-party files
 keep their own licenses: the RAMSES and vsomeip interfaces in cluster-render
 (MPL-2.0), the Intel Media SDK headers in waze-on-cluster (MIT), Project
-Nayuki's QR code generator in robertn_waze_cluster (MIT).
+Nayuki's QR code generator in robertn_waze_cluster (MIT), and
+waze-cluster-cards (MIT, after Waze Cards by h4m4d).

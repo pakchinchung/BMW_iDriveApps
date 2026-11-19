@@ -11,7 +11,9 @@
  * settings for this driver checkbox (profile_sync.js; greyed while no driver
  * profile is detected), Cluster map (the shared render's map), the Hide
  * BMW's turn box checkbox (the render's setting; a press asks the render to
- * flip it), Logs. HUD: HUD map (the map
+ * flip it), the Show Waze's turn and arrival cards checkbox and its Waze
+ * cards row (the waze-cluster-cards service's switch and state,
+ * cards_control.js; greyed while the service is not reachable), Logs. HUD: HUD map (the map
  * on the HUD), the Keep HUD map over BMW's pop-ups checkbox, the Size
  * slider, Position with Move left, Move right, Move up, Move down and
  * Centre; the checkbox, the slider and the position buttons are greyed
@@ -61,6 +63,7 @@ const someipBuilders = require('oap-sdk/src/someip/someipBuilders');
 const i18n = require('./i18n.js');
 const { WazeClusterControl, ZOOM_STEP, SHOWN_ON } = require('./waze_cluster_control.js');
 const { LogsControl, ROWS: LOGS_ROWS } = require('./logs_control.js');
+const { CardsControl } = require('./cards_control.js');
 const { qrPng } = require('./qr.js');
 const { ProfileSync, sessionReader } = require('./profile_sync.js');
 
@@ -83,6 +86,8 @@ const AA_ZOOM_OUT_NAME = 'wocAaZoomOut';
 const AA_ZOOM_IN_NAME = 'wocAaZoomIn';
 const AA_CARD_NAME = 'wocAaCard';
 const GUIDE_NAME = 'wocGuide';
+const CARDS_NAME = 'wocCards';
+const CARDS_STATE_NAME = 'wocCardsState';
 const HEAD_GENERAL_NAME = 'wocHeadGeneral';
 const HEAD_HUD_NAME = 'wocHeadHud';
 const HUD_NAME = 'wocHud';
@@ -140,6 +145,8 @@ class WazeClusterApp extends OnlineApp {
         this._control.on('change', () => this._render());
         this._logs = new LogsControl({ log: logger });
         this._logs.on('change', () => this._renderLogs());
+        this._cards = new CardsControl({ log: logger });
+        this._cards.on('change', () => this._render());
         /* the map settings per driver profile, page shown or not */
         this._profiles = new ProfileSync({ control: this._control, log: logger, readProfile: sessionReader(someipBuilders, logger) });
         this._profiles.on('change', () => this._render());
@@ -206,7 +213,7 @@ class WazeClusterApp extends OnlineApp {
         }
         const names = [STATUS_NAME, MAP_NAME, RESTART_STATUS_NAME, ENABLE_NAME, DISABLE_NAME, WIFI_NAME, WIFI_HINT_NAME, AA_STATUS_NAME,
             AA_ENABLE_NAME, AA_DISABLE_NAME, AA_ZOOM_NAME, AA_ZOOM_OUT_NAME, AA_ZOOM_IN_NAME, AA_CARD_NAME, RESTART_NAME, GUIDE_NAME,
-            HEAD_GENERAL_NAME, HEAD_HUD_NAME, SHOW_ON_NAME, PROFILE_NAME, HUD_NAME, HUD_KEEP_NAME, HUD_SIZE_NAME, HUD_POS_NAME]
+            CARDS_NAME, CARDS_STATE_NAME, HEAD_GENERAL_NAME, HEAD_HUD_NAME, SHOW_ON_NAME, PROFILE_NAME, HUD_NAME, HUD_KEEP_NAME, HUD_SIZE_NAME, HUD_POS_NAME]
             .concat(Object.values(HUD_MOVE_NAMES), [HUD_CENTRE_NAME, CAPTURE_NAME, CAPTURE_STATUS,
                 LOGS_NAME, LOGS_SAVE, LOGS_STATUS, LOGS_QR, LOGS_URL], LOGS_ROW_NAMES);
         names.forEach((name) => { this._components[name] = rhmi.getByName(name); });
@@ -231,6 +238,12 @@ class WazeClusterApp extends OnlineApp {
              * decides what it shows */
             delete this._written[`selected:${GUIDE_NAME}`];
             this._control.toggleGuidance();
+        });
+        this._bind(CARDS_NAME, () => {
+            /* as for the turn box: the service's answer decides the tick */
+            delete this._written[`selected:${CARDS_NAME}`];
+            this._cards.toggle();
+            this._render();
         });
         this._bind(HUD_KEEP_NAME, () => {
             /* as for the turn box: the render's answer decides the tick */
@@ -440,6 +453,7 @@ class WazeClusterApp extends OnlineApp {
         this._reportVisibilityStatus(visible);
         if (visible) {
             this._control.open();
+            this._cards.open();
             this._profiles.refresh();
             /* back from an overlay or another app on the Logs page, which
              * says nothing of its own */
@@ -449,6 +463,7 @@ class WazeClusterApp extends OnlineApp {
             }
         } else {
             this._control.close();
+            this._cards.close();
         }
     }
 
@@ -569,6 +584,12 @@ class WazeClusterApp extends OnlineApp {
         this._setEnabled(GUIDE_NAME, hide !== null && !unavailable && c.clusterOn() !== false);
         this._write(GUIDE_NAME, t("Hide BMW's turn box"));
         this._setSelected(GUIDE_NAME, !!hide && !unavailable);
+        /* Waze's cards over the cluster map: the service's switch, kept by it */
+        const cards = this._cards;
+        this._write(CARDS_NAME, t("Show Waze's turn and arrival cards"));
+        this._setSelected(CARDS_NAME, cards.enabled() === true);
+        this._setEnabled(CARDS_NAME, cards.canToggle());
+        this._write(CARDS_STATE_NAME, cards.text());
         this._write(HUD_NAME, c.hudText());
         this._write(HUD_KEEP_NAME, t("Keep HUD map over BMW's pop-ups"));
         this._setSelected(HUD_KEEP_NAME, c.hudKeepShown() === true);
@@ -666,6 +687,7 @@ class WazeClusterApp extends OnlineApp {
         logger.info(`robertn_waze_cluster shutdown: ${JSON.stringify(reason)}`);
         clearTimeout(this._hideTimer);
         this._control.close();
+        this._cards.close();
         this._logs.close();
         this._profiles.stop();
         if (this._qr.file) {

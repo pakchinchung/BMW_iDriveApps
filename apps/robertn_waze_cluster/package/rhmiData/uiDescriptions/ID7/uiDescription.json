@@ -169,6 +169,54 @@
             }
           ]
         },
+        "64": {
+          "type": "checkBox",
+          "name": "wocCards",
+          "properties": {
+            "Visible": {
+              "value": 1,
+              "type": "UInt"
+            },
+            "Focusable": {
+              "value": 3,
+              "type": "UInt"
+            }
+          },
+          "rows": [
+            {
+              "Text": {
+                "value": "Show Waze's turn and arrival cards",
+                "type": "Text"
+              },
+              "eParam_RowSelected": {
+                "value": false,
+                "type": "Bool"
+              }
+            }
+          ]
+        },
+        "65": {
+          "type": "label",
+          "name": "wocCardsState",
+          "properties": {
+            "Visible": {
+              "value": 1,
+              "type": "UInt"
+            },
+            "Focusable": {
+              "value": 0,
+              "type": "UInt"
+            }
+          },
+          "rows": [
+            {
+              "Text": {
+                "value": "Waze cards: Unavailable",
+                "type": "Text"
+              }
+            }
+          ]
+        },
         "39": {
           "type": "button",
           "name": "wocLogs",

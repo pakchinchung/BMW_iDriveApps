@@ -23,7 +23,10 @@
  * Zoom and the Hide phone's turn card checkbox; info rows as Name: Value;
  * the Cluster map row in General; Hide BMW's turn box ticked as the render
  * reports, each press one guide command to the render, greyed and unticked,
- * its label kept, while the cluster renderer holds the box shown; Show on,
+ * its label kept, while the cluster renderer holds the box shown; Show
+ * Waze's turn and arrival cards under it, ticked as the cards service says,
+ * each press one switch, a refused one ticked back, its Waze cards row,
+ * greyed and Unavailable without the service; Show on,
  * a drop-down of Cluster, HUD, both and Off in General, Cluster by default,
  * each pick through the render and patchd, the display turned on first;
  * Off from the cluster and from both, Cluster map and HUD map Off, the HUD's
@@ -59,9 +62,10 @@ const EventEmitter = require('events');
 const fs = require('fs');
 const net = require('net');
 const path = require('path');
-const { FakeRender, FakePatch, FakeLogs, RENDER_PAGE, RENDER_FPS } = require('./fakes.js');
+const { FakeRender, FakePatch, FakeLogs, FakeCards, RENDER_PAGE, RENDER_FPS } = require('./fakes.js');
 const { RENDER_PATH, PATCH_PATH, PENDING_PATH, SIZE, SAFE, HUD_SIZE_STEPS } = require('../src/waze_cluster_control.js');
 const { LOGS_PATH } = require('../src/logs_control.js');
+const { CARDS_PATH } = require('../src/cards_control.js');
 
 const MANIFEST = JSON.parse(fs.readFileSync(path.join(__dirname, '..', 'mgu-app.json'), 'utf8'));
 const PKG = path.join(__dirname, '..', MANIFEST.tree);
@@ -75,7 +79,8 @@ const RSOCK = `/tmp/woc-pr-${process.pid}.sock`;
 const PSOCK = `/tmp/woc-pp-${process.pid}.sock`;
 const PENDING = `/tmp/woc-ppend-${process.pid}.json`;
 const LSOCK = `/tmp/woc-pl-${process.pid}.sock`;
-const SOCKETS = { [RENDER_PATH]: RSOCK, [PATCH_PATH]: PSOCK, [LOGS_PATH]: LSOCK };
+const CSOCK = `/tmp/woc-pc-${process.pid}.sock`;
+const SOCKETS = { [RENDER_PATH]: RSOCK, [PATCH_PATH]: PSOCK, [LOGS_PATH]: LSOCK, [CARDS_PATH]: CSOCK };
 const realConnect = net.connect;
 const exit = process.exit.bind(process);
 net.connect = (p, ...rest) => realConnect.call(net, SOCKETS[p] || p, ...rest);
@@ -284,7 +289,8 @@ async function main() {
     const main = xmlIds('1').map(([id]) => [id, components[id].type, components[id].name, shipped(components[id])]);
     assert.deepStrictEqual(main.map(([id, type, name, text]) => (type === 'title' ? name : `${name} ${text}`)), [
         'wocTitle',
-        'wocHeadGeneral General', 'wocShowOn Show on: Cluster', 'wocProfile Own settings for this driver', 'wocMap Cluster map: Off', "wocGuide Hide BMW's turn box", 'wocLogs Logs',
+        'wocHeadGeneral General', 'wocShowOn Show on: Cluster', 'wocProfile Own settings for this driver', 'wocMap Cluster map: Off', "wocGuide Hide BMW's turn box",
+        "wocCards Show Waze's turn and arrival cards", 'wocCardsState Waze cards: Unavailable', 'wocLogs Logs',
         'wocHeadHud HUD', 'wocHud HUD map: \u2014', "wocHudKeep Keep HUD map over BMW's pop-ups", 'wocHudSize Size: \u2014', 'wocHudPos Position: \u2014', 'wocHudLeft Move left',
         'wocHudRight Move right', 'wocHudUp Move up', 'wocHudDown Move down', 'wocHudCentre Centre',
         'wocHeadCarPlay CarPlay', 'wocStatus Status: Connecting…', 'wocEnable Patch', 'wocDisable Remove patch', 'wocWifi ', 'wocWifiHint ',
@@ -306,7 +312,7 @@ async function main() {
         .find((id) => components[id].name === n)].properties.Focusable.value]), Array(4).fill(['0', 0]), 'the section headers take no focus');
     assert.strictEqual(main.find(([, , name]) => focus[name] === '3')[2], 'wocShowOn', 'the first row the controller stops on: Show on');
     assert(!main.some(([, , name]) => /^wocRow|^wocSetup|^wocCapture/.test(name)), 'no log rows, setup line or capture on the main page');
-    assert.deepStrictEqual(['wocAaCard', 'wocGuide', 'wocProfile', 'wocHudKeep'].map((n) => widgets[n]), Array(4).fill('LT_CheckBox_1Row'),
+    assert.deepStrictEqual(['wocAaCard', 'wocGuide', 'wocCards', 'wocProfile', 'wocHudKeep'].map((n) => widgets[n]), Array(5).fill('LT_CheckBox_1Row'),
         'the on/off settings are checkboxes');
     assert.deepStrictEqual([widgets.wocShowOn, widgets.wocHudSize], ['LT_DropDownMenu_1Row_2Col3070', 'LT_Slider_LeftJustified_Fill_Steps'],
         'where the map shows: a drop-down of four; the HUD\'s size: a slider');
@@ -356,7 +362,7 @@ async function main() {
         await until('page shows the map', () => byName.wocMap.text === `Cluster map: Showing ${RENDER_PAGE} — ${RENDER_FPS}` && status.text === 'Status: Patched');
         assert(!logs.some((l) => /^error/.test(l)), logs.filter((l) => /^error/.test(l)).join('\n'));
         const bound = logs.filter((l) => l.startsWith('info: BIND OK: ')).map((l) => l.split(' ')[3]).sort();
-        assert.deepStrictEqual(bound, ['wocAaCard', 'wocAaDisable', 'wocAaEnable', 'wocAaZoomIn', 'wocAaZoomOut', 'wocCapture', 'wocDisable', 'wocEnable',
+        assert.deepStrictEqual(bound, ['wocAaCard', 'wocAaDisable', 'wocAaEnable', 'wocAaZoomIn', 'wocAaZoomOut', 'wocCapture', 'wocCards', 'wocDisable', 'wocEnable',
             'wocGuide', 'wocHudCentre', 'wocHudDown', 'wocHudKeep', 'wocHudLeft', 'wocHudRight', 'wocHudUp', 'wocLogs', 'wocLogsSave', 'wocProfile',
             'wocRestart'],
             'bound buttons and checkbox');
@@ -651,6 +657,43 @@ async function main() {
         assert.strictEqual(patch.count('reboot'), 2, 'a greyed button pressed sends nothing');
         console.log('ok   pressing the restart button restarts the unit once; pressed again while greyed, nothing');
 
+        /* Waze's cards: the cards service's switch and state, greyed while
+         * the service is not reachable; the service's answer decides the tick. */
+        const cardsBox = byName.wocCards, cardsRow = byName.wocCardsState;
+        await until('no cards service: Unavailable, greyed', () => cardsRow.text === 'Waze cards: Unavailable' && cardsBox.enabled === false);
+        const cards = new FakeCards(CSOCK);
+        await cards.listen();
+        await until('the cards service reached', () => cardsBox.enabled === true && cardsBox.selected === true &&
+            cardsRow.text === 'Waze cards: Waiting for the cluster map' && cardsBox.text === "Show Waze's turn and arrival cards");
+        cards.state = 'looking';
+        cards.announce();
+        await until('looking', () => cardsRow.text === 'Waze cards: Waiting for Waze');
+        cards.state = 'showing';
+        cards.view = 'full screen';
+        cards.announce();
+        await until('showing', () => cardsRow.text === 'Waze cards: Showing');
+        await sleep(450);
+        cardsBox.ticks.length = 0;
+        cardsBox.press();
+        await until('switched off', () => cards.enabled === 0 && cardsRow.text === 'Waze cards: Off' && cardsBox.selected === false);
+        assert.deepStrictEqual(cards.received.filter((m) => m.cmd === 'cards'), [{ cmd: 'cards', on: 0 }], 'one switch to the service');
+        await sleep(100);
+        assert(cardsBox.ticks.every((v) => v === false), `unticked from the press on, never ticked meanwhile: ${JSON.stringify(cardsBox.ticks)}`);
+        await sleep(450);
+        cardsBox.press();
+        await until('on again', () => cards.enabled === 1 && cardsRow.text === 'Waze cards: Showing' && cardsBox.selected === true);
+        cards.refuse = 'not saved: no space';
+        await sleep(450);
+        cardsBox.press();
+        await until('refused: ticked again', () => cards.received.filter((m) => m.cmd === 'cards').length === 3 &&
+            cardsBox.selected === true && cardsRow.text === 'Waze cards: Showing');
+        cards.refuse = null;
+        assert.deepStrictEqual(render.received.filter((m) => m.cmd === 'cards'), [], 'nothing of the cards to the render');
+        await cards.close();
+        await until('the service gone', () => cardsBox.enabled === false && cardsRow.text === 'Waze cards: Unavailable');
+        console.log('ok   Waze\'s cards: the checkbox ticked as the service says, each press one switch, a refused one ticked back; ' +
+            'its row Waiting for the cluster map, Waiting for Waze, Showing, Off; greyed and Unavailable without the service');
+
         /* CarPlay's Wi-Fi band: its row while patchd knows it, the line under
          * it on 2.4 GHz only, neither without patchd. */
         const wifi = byName.wocWifi, hint = byName.wocWifiHint;
@@ -677,10 +720,10 @@ async function main() {
         Object.values(components).filter((d) => !/^(wocRestart|wocWifi)/.test(d.name) && d.type !== 'title')
             .forEach((d) => assert.strictEqual(byName[d.name].visible, true, `${d.name} stays on the page`));
         ['wocEnable', 'wocDisable', 'wocAaEnable', 'wocAaDisable', 'wocAaZoomOut', 'wocAaZoomIn', 'wocAaCard', 'wocGuide', 'wocShowOn', 'wocProfile', 'wocHudSize',
-            'wocHudLeft', 'wocHudCentre', 'wocHudKeep']
+            'wocHudLeft', 'wocHudCentre', 'wocHudKeep', 'wocCards']
             .forEach((n) => assert.deepStrictEqual([...byName[n].enabledSeen].sort(), [false, true], `${n} greyed and enabled in place`));
         const valueRow = /^[A-Z][A-Za-z ]+: [A-Z0-9\u2014]/;
-        ['wocStatus', 'wocAaStatus', 'wocAaZoom', 'wocMap', 'wocHud', 'wocHudSize', 'wocHudPos', 'wocRestartStatus']
+        ['wocStatus', 'wocAaStatus', 'wocAaZoom', 'wocMap', 'wocHud', 'wocHudSize', 'wocHudPos', 'wocRestartStatus', 'wocCardsState']
             .forEach((n) => assert(valueRow.test(byName[n].text), `${n}: "${byName[n].text}" as Name: Value`));
         console.log('ok   no row came or went but CarPlay Wi-Fi, its line and the restart\'s; the buttons were greyed and enabled in place; ' +
             'info rows as Name: Value');

@@ -440,7 +440,50 @@ class FakeLogs extends LineServer {
     }
 }
 
-module.exports = { FakeRender, FakePatch, FakeLogs, RENDER_PAGE, RENDER_FPS };
+/* FakeCards speaks the waze-cluster-cards socket: on connect its status;
+ * cards -> `enabled` set, the reply, then the new status to every client (or, with
+ * `refuse` set, a refused reply and nothing changed); `state` and `view` are
+ * what the test sets, sent with announce(). */
+class FakeCards extends LineServer {
+    constructor(path) {
+        super(path);
+        this.enabled = 1;
+        this.state = 'waiting';
+        this.view = '';
+        this.refuse = null;
+    }
+
+    announce() {
+        this._broadcast(this._status());
+    }
+
+    _status() {
+        return { ev: 'status', on: this.enabled, state: this.enabled ? this.state : 'off', view: this.enabled ? this.view : '' };
+    }
+
+    _onConnect(socket) {
+        this._send(socket, this._status());
+    }
+
+    _onCommand(msg, socket) {
+        this.received.push(msg);
+        this.emit('command', msg);
+        if (msg.cmd !== 'cards') {
+            return;
+        }
+        if (this.refuse) {
+            this._send(socket, { ev: 'cards-reply', ok: false, reason: this.refuse });
+            return;
+        }
+        setTimeout(() => {
+            this.enabled = msg.on ? 1 : 0;
+            this._send(socket, { ev: 'cards-reply', ok: true, reason: '' });
+            this.announce();
+        }, STEP_MS);
+    }
+}
+
+module.exports = { FakeRender, FakePatch, FakeLogs, FakeCards, RENDER_PAGE, RENDER_FPS };
 
 if (require.main === module) {
     const render = new FakeRender(process.argv[2] || '/tmp/woc-render.sock');

@@ -1,0 +1,48 @@
+{
+  "id": "waze-cluster-cards",
+  "kind": "tool",
+  "version": "0.1.0",
+  "license": "MIT",
+  "title": "Waze cards on cluster",
+  "description": "Shows Waze's turn card and arrival card over the Waze map on the instrument cluster. It is installed with the Maps on cluster app, which switches it on and off.",
+  "requires": {
+    "mgu-deploy": "0.7.0",
+    "cluster-render": "0.5.3"
+  },
+  "uninstallable": true,
+  "mguHmi": [
+    "ID7"
+  ],
+  "files": [
+    {
+      "path": "cards.js",
+      "from": "src/cards.js",
+      "mode": "0644"
+    },
+    {
+      "path": "card.js",
+      "from": "src/card.js",
+      "mode": "0644"
+    },
+    {
+      "path": "LICENSE",
+      "from": "LICENSE",
+      "mode": "0644"
+    }
+  ],
+  "units": [
+    {
+      "name": "waze-cluster-cards.service",
+      "from": "systemd/waze-cluster-cards.service"
+    }
+  ],
+  "enable": [
+    {
+      "unit": "waze-cluster-cards.service",
+      "target": "multi-user.target"
+    }
+  ],
+  "restart": [
+    "waze-cluster-cards.service"
+  ]
+}

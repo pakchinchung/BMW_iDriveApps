@@ -74,6 +74,8 @@ jobs:
               native/cluster-render/*) cr=true woc=true ids="$ids native/cluster-render native/waze-on-cluster" ;;
               native/waze-on-cluster/test/*) woc=true ;;
               native/waze-on-cluster/*) woc=true ids="$ids native/waze-on-cluster" ;;
+              native/waze-cluster-cards/test/*) app=true ;;
+              native/waze-cluster-cards/*) app=true ids="$ids native/waze-cluster-cards" ;;
               native/*/test/*) ;;
               native/*/*) f=${f#native/} ids="$ids native/${f%%/*}" ;;
               apps/*/*) f=${f#apps/} app=true ids="$ids apps/${f%%/*}" ;;
@@ -152,6 +154,7 @@ jobs:
       - run: node apps/robertn_waze_cluster/tools/test_page.js
       - run: node apps/robertn_waze_cluster/tools/test_profiles.js
       - run: node apps/robertn_waze_cluster/tools/test_i18n.js
+      - run: node native/waze-cluster-cards/test/cards_test.js
 
   waze-on-cluster-x86:
     needs: changes

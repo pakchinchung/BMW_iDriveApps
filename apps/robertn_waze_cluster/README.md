@@ -62,6 +62,14 @@ The app is in the head unit's display language.
   keeps its own Show on, HUD size and HUD position.
 - **Hide BMW's turn box:** ticked (the default), BMW's turn-by-turn box on
   the cluster is hidden while the map shows.
+- **Show Waze's turn and arrival cards:** ticked (the default), while Waze
+  guides on the central screen its turn card shows at the top of the Waze
+  map on the cluster and its arrival card at the bottom, inside the part
+  of the map the gauges leave visible. It works with Waze's full-screen map
+  and with CarPlay's Dashboard. **Waze cards** under it says what they are
+  doing: `Showing`, `Waiting for Waze` (Waze shows no cards on the central
+  screen), `Waiting for the cluster map` (no Waze map on the cluster),
+  `Off`, or `Unavailable` (the Waze cards on cluster tool is not running).
 - **Logs:** opens the Logs page (see below).
 
 **HUD**
@@ -193,6 +201,7 @@ node tools/test_control.js           # the socket client against fake sockets
 node tools/test_page.js              # the page against a fake SDK and HMI
 node tools/test_profiles.js          # the driver profiles against fake sockets and SessionManager
 node tools/test_i18n.js              # every language: its words, placeholders, RHMI text files
+node ../../native/waze-cluster-cards/test/cards_test.js   # the Waze cards service
 node tools/build.js                  # robertn_waze_cluster@<version>.src.tgz
 node tools/build.js --sdk <donor>    # also robertn_waze_cluster@<version>.tgz
 ```
@@ -214,6 +223,7 @@ Enter starts or stops a fake CarPlay stream.
 | `locales/<code>.json` | a language's words (Languages) |
 | `src/waze_cluster_control.js` | the render and patch socket clients and the status logic |
 | `src/logs_control.js` | the logs socket client |
+| `src/cards_control.js` | the Waze cards socket client ([waze-cluster-cards](../../native/waze-cluster-cards)) |
 | `src/profile_sync.js` | the driver profile in use and its own map settings |
 | `src/qr.js`, `src/qrcodegen.js` | the QR code PNG; Project Nayuki's generator (MIT, `LICENSE-qrcodegen.txt`) |
 | `tools/` | build, fakes, tests, icon |
